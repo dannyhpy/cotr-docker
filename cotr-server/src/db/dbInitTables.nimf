@@ -1,0 +1,128 @@
+#? stdtmpl(emit="queriesStr.add")
+#proc dbInitTables(db: DbConn) =
+#  var queriesStr = ""
+
+CREATE TABLE users (
+  #when defined(dbPostgres):
+  id BIGSERIAL PRIMARY KEY,
+  #else:
+  id INTEGER PRIMARY KEY,
+  #end when
+  remote BOOL NOT NULL DEFAULT FALSE,
+  name VARCHAR(32),
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  emailAddr VARCHAR(128) UNIQUE,
+  passwordHash VARCHAR(128),
+  passwordSalt VARCHAR(128),
+  installId VARCHAR(128),
+  signInToken VARCHAR(128) UNIQUE,
+  signUpToken VARCHAR(128) UNIQUE,
+  signInCount INT NOT NULL DEFAULT 0,
+  lastSignInAt TIMESTAMP
+);
+
+CREATE TABLE players (
+  #when defined(dbPostgres):
+  id BIGSERIAL PRIMARY KEY,
+  #else:
+  id INTEGER PRIMARY KEY,
+  #end when
+  xp INT NOT NULL DEFAULT 0,
+  level INT NOT NULL DEFAULT 0,
+  crashPoints INT NOT NULL DEFAULT 0,
+  guildId INT,
+  skinId INT NOT NULL DEFAULT 81329
+);
+
+CREATE TABLE sessionKeys (
+  val TEXT PRIMARY KEY,
+  remote BOOL NOT NULL DEFAULT FALSE,
+  userId BIGINT NOT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE guilds (
+  #when defined(dbPostgres):
+  id BIGSERIAL PRIMARY KEY,
+  #else:
+  id INTEGER PRIMARY KEY,
+  #end when
+  name VARCHAR(32) NOT NULL,
+  description VARCHAR(100),
+  badgeId INT NOT NULL DEFAULT 0,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  crashPoints INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE guildMembers (
+  guildId BIGINT NOT NULL,
+  playerId BIGINT NOT NULL,
+  leader BOOL NOT NULL DEFAULT FALSE,
+  joinedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE inventoryItems (
+  id INT NOT NULL,
+  playerId BIGINT NOT NULL,
+  count INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE skins (
+  id INT NOT NULL,
+  playerId BIGINT NOT NULL,
+  characterId INT NOT NULL,
+  obtainedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tutorials (
+  id VARCHAR(64) NOT NULL,
+  playerId BIGINT NOT NULL
+);
+
+CREATE TABLE producers (
+  id INT NOT NULL,
+  playerId BIGINT NOT NULL
+);
+
+CREATE TABLE islands (
+  id INT NOT NULL,
+  playerId BIGINT NOT NULL,
+  powerGems INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE buildings (
+  id INT NOT NULL,
+  playerId BIGINT NOT NULL,
+  unlockedLevel INT NOT NULL DEFAULT 0,
+  level INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE abCases (
+  name VARCHAR(64) NOT NULL,
+  userId BIGINT NOT NULL,
+  version INT NOT NULL DEFAULT 0,
+  caseNum INT NOT NULL DEFAULT 0
+);
+
+CREATE TABLE gangMembers (
+  runDefinitionId VARCHAR(64) NOT NULL,
+  playerId BIGINT NOT NULL,
+  gangId VARCHAR(64) NOT NULL,
+  defeated BOOL NOT NULL DEFAULT FALSE,
+  defeatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE itemUnlocks (
+  id INT NOT NULL,
+  playerId BIGINT NOT NULL
+);
+
+CREATE TABLE packs (
+  id VARCHAR(64) NOT NULL,
+  playerId BIGINT NOT NULL
+);
+
+#  let queries = queriesStr.split("\L\L")
+#  for query in queries:
+#    if query.strip().len() > 0:
+#      db.exec(sql(query))

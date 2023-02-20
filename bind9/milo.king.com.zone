@@ -1,0 +1,13 @@
+; milo.king.com
+$TTL 1d
+$ORIGIN milo.king.com.
+@         IN      SOA     ns.milo.king.com. dannyhpy.disroot.org. (
+                              2023021600 ; serial number
+                              1h         ; refresh
+                              5m         ; update retry
+                              1w         ; expiry
+                              5m         ; minimum
+                          )
+@         IN      NS      ns
+ns        IN      A       188.44.64.244
+@         IN      A       188.44.64.244
